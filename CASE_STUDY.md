@@ -148,6 +148,13 @@ Final Nail Prompt 02-03 establishes:
 - PMAD/tank/thruster hardware that distinguishes conditioned power harnesses from propellant feed routing
 - electric thruster faces with ion-grid cues, gimbal rings, and restrained plume logic instead of chemical-engine language
 
+Final Nail Prompt 04-06 establishes:
+
+- one fixed orbital world where Earth, sun, galaxy band, and spacecraft staging do not move between modes
+- a more premium sun treatment with separate disc, halo, glow, and restrained starburst layers
+- a richer Earth limb with sun-aligned day/night balance, city-light gating, layered clouds, and limb-aware atmosphere
+- presentation and close-up camera presets tuned around the permanent Earth-sun composition
+
 ## 6. System Architecture
 
 The spacecraft uses a long axial layout:

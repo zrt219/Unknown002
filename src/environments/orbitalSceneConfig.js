@@ -28,14 +28,16 @@ export const orbitalBaseScene = {
       depth: 150,
       factor: 3.7,
       radius: 236,
-      speed: 0.018
+      speed: 0.018,
+      sceneOpacity: { clean: 1, engineering: 0.92, energy: 0.72, thermal: 0.46 }
     },
     {
       count: 620,
       depth: 124,
       factor: 7.9,
       radius: 222,
-      speed: 0.01
+      speed: 0.01,
+      sceneOpacity: { clean: 0.86, engineering: 0.78, energy: 0.56, thermal: 0.28 }
     }
   ],
   stars: {
@@ -56,9 +58,15 @@ export const orbitalBaseScene = {
   sun: {
     visible: true,
     position: [-86, 26, -156],
-    coreScale: 18,
-    haloScale: 42,
-    glowScale: 74,
+    coreScale: 12,
+    discScale: 9,
+    haloScale: 38,
+    glowScale: 76,
+    starburstScale: [110, 62, 1],
+    discOpacity: 1,
+    haloOpacity: 0.34,
+    glowOpacity: 0.12,
+    starburstOpacity: 0.18,
     lightPosition: [-34, 20, 14],
     coreColor: '#fff4dc',
     haloColor: '#ffb869'
@@ -78,7 +86,7 @@ export const environmentProfiles = {
   'deep-space': {
     key: 'deep-space',
     label: 'Deep Space',
-    description: 'Neutral technical treatment of the persistent orbital scene.',
+    description: 'Neutral technical lighting treatment of the same orbital world.',
     background: '#030712',
     opacity: {
       galaxyBand: { clean: 0.54, engineering: 0.62, energy: 0.5, thermal: 0.18 },
@@ -90,7 +98,7 @@ export const environmentProfiles = {
   'earth-orbit': {
     key: 'earth-orbit',
     label: 'Earth Orbit',
-    description: 'Hero Earth-limb sunrise treatment for presentation framing.',
+    description: 'Hero sunrise treatment of the same fixed Earth-limb scene.',
     background: '#020611',
     opacity: {
       galaxyBand: { clean: 0.82, engineering: 0.74, energy: 0.46, thermal: 0.18 },
@@ -102,7 +110,7 @@ export const environmentProfiles = {
   'thermal-analysis': {
     key: 'thermal-analysis',
     label: 'Thermal Analysis',
-    description: 'Muted analytical treatment of the same orbital scene.',
+    description: 'Muted analytical treatment of the same orbital world.',
     background: '#01030a',
     opacity: {
       galaxyBand: { clean: 0.18, engineering: 0.14, energy: 0.12, thermal: 0.06 },

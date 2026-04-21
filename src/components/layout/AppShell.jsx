@@ -70,7 +70,7 @@ export default function AppShell({
           ) : null}
 
           <section className="hud-section">
-            <h2>Scene Environment</h2>
+            <h2>Orbital Scene Treatment</h2>
             {environmentControls}
           </section>
 

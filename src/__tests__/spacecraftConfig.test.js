@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   braytonOverlay,
   cameraControlDefaults,
+  cameraControlProfiles,
   cameraControlTuning,
   cameraPresetGroups,
   cameraPresets,
@@ -137,6 +138,22 @@ describe('spacecraftConfig', () => {
       panSpeed: expect.any(Number),
       minDistance: expect.any(Number),
       maxDistance: expect.any(Number)
+    })
+    expect(cameraControlProfiles).toMatchObject({
+      presentation: expect.objectContaining({
+        minDistance: expect.any(Number),
+        transitionSharpness: expect.any(Number)
+      }),
+      system: expect.objectContaining({
+        maxDistance: expect.any(Number)
+      }),
+      closeUp: expect.objectContaining({
+        minDistance: expect.any(Number),
+        maxDistance: expect.any(Number)
+      }),
+      plan: expect.objectContaining({
+        maxPolarAngle: expect.any(Number)
+      })
     })
 
     expect(
@@ -298,9 +315,25 @@ describe('spacecraftConfig', () => {
     expect(environmentConfig['deep-space'].earth.position).toEqual(orbitalBaseScene.earth.position)
     expect(environmentConfig['earth-orbit'].earth.position).toEqual(orbitalBaseScene.earth.position)
     expect(environmentConfig['thermal-analysis'].earth.position).toEqual(orbitalBaseScene.earth.position)
+    expect(environmentConfig['deep-space'].earth.radius).toBe(orbitalBaseScene.earth.radius)
+    expect(environmentConfig['earth-orbit'].earth.radius).toBe(orbitalBaseScene.earth.radius)
+    expect(environmentConfig['thermal-analysis'].earth.radius).toBe(orbitalBaseScene.earth.radius)
     expect(environmentConfig['deep-space'].sun.lightPosition).toEqual(sunLightRig.lightPosition)
     expect(environmentConfig['earth-orbit'].sun.lightPosition).toEqual(sunLightRig.lightPosition)
     expect(environmentConfig['thermal-analysis'].sun.lightPosition).toEqual(sunLightRig.lightPosition)
+    expect(environmentConfig['deep-space'].sun.position).toEqual(orbitalBaseScene.sun.position)
+    expect(environmentConfig['earth-orbit'].sun.position).toEqual(orbitalBaseScene.sun.position)
+    expect(environmentConfig['thermal-analysis'].sun.position).toEqual(orbitalBaseScene.sun.position)
+    expect(environmentConfig['earth-orbit'].sun).toMatchObject({
+      discScale: expect.any(Number),
+      starburstOpacity: expect.any(Number)
+    })
+    environmentConfig['earth-orbit'].starLayers.forEach((layer) => {
+      expect(layer.sceneOpacity).toMatchObject({
+        clean: expect.any(Number),
+        thermal: expect.any(Number)
+      })
+    })
     expect(perModeLightAdjustments.clean.key).toBeGreaterThan(perModeLightAdjustments.thermal.key)
     expect(environmentConfig['earth-orbit'].earth.presentation).toMatchObject({
       atmosphere: expect.objectContaining({
@@ -400,6 +433,12 @@ describe('spacecraftConfig', () => {
     })
     Object.values(modeCameraProfiles).forEach((profile) => {
       expect(cameraPresets[profile.resetPreset]).toBeDefined()
+    })
+    Object.values(cameraPresets).forEach((preset) => {
+      expect(preset.position).toHaveLength(3)
+      expect(preset.target).toHaveLength(3)
+      expect(preset.fov).toBeGreaterThan(15)
+      expect(cameraControlProfiles[preset.controlProfile]).toBeDefined()
     })
     expect(getResetCameraPreset('clean')).toBe('heroTechnical')
     expect(getResetCameraPreset('engineering')).toBe('overviewThreeQuarter')

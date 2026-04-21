@@ -34,7 +34,7 @@ describe('App shell', () => {
     expect(screen.getByLabelText(/earth orbit/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/thermal analysis/i)).toBeInTheDocument()
     expect(
-      screen.getByLabelText(/auto-select best scene for view mode/i)
+      screen.getByLabelText(/auto-select best treatment for view mode/i)
     ).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: /reactor close/i })
@@ -250,7 +250,7 @@ describe('App shell', () => {
   it('lets the user turn off auto-follow and preserve a manual environment choice', () => {
     render(<App />)
 
-    const autoFollow = screen.getByLabelText(/auto-select best scene for view mode/i)
+    const autoFollow = screen.getByLabelText(/auto-select best treatment for view mode/i)
 
     expect(autoFollow).toBeChecked()
 

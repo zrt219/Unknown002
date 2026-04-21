@@ -36,30 +36,37 @@ function createSeededRandom(seed) {
   }
 }
 
-function createSunTexture() {
-  return buildTexture(768, 768, (context, width, height) => {
+function createSunDiscTexture() {
+  return buildTexture(512, 512, (context, width, height) => {
     const centerX = width / 2
     const centerY = height / 2
 
     context.clearRect(0, 0, width, height)
 
-    for (let index = 0; index < 12; index += 1) {
-      const angle = (Math.PI / 6) * index
-      const outerX = centerX + Math.cos(angle) * width * 0.44
-      const outerY = centerY + Math.sin(angle) * height * 0.44
+    const disc = context.createRadialGradient(
+      centerX,
+      centerY,
+      0,
+      centerX,
+      centerY,
+      width * 0.32
+    )
+    disc.addColorStop(0, 'rgba(255, 255, 248, 1)')
+    disc.addColorStop(0.45, 'rgba(255, 245, 220, 0.96)')
+    disc.addColorStop(0.7, 'rgba(255, 206, 126, 0.72)')
+    disc.addColorStop(1, 'rgba(255, 206, 126, 0)')
 
-      const gradient = context.createLinearGradient(centerX, centerY, outerX, outerY)
-      gradient.addColorStop(0, 'rgba(255, 240, 204, 0.95)')
-      gradient.addColorStop(0.25, 'rgba(255, 204, 122, 0.45)')
-      gradient.addColorStop(1, 'rgba(255, 204, 122, 0)')
+    context.fillStyle = disc
+    context.fillRect(0, 0, width, height)
+  })
+}
 
-      context.strokeStyle = gradient
-      context.lineWidth = index % 3 === 0 ? 10 : 4
-      context.beginPath()
-      context.moveTo(centerX, centerY)
-      context.lineTo(outerX, outerY)
-      context.stroke()
-    }
+function createSunHaloTexture() {
+  return buildTexture(768, 768, (context, width, height) => {
+    const centerX = width / 2
+    const centerY = height / 2
+
+    context.clearRect(0, 0, width, height)
 
     const halo = context.createRadialGradient(
       centerX,
@@ -67,16 +74,50 @@ function createSunTexture() {
       0,
       centerX,
       centerY,
-      width * 0.42
+      width * 0.46
     )
-    halo.addColorStop(0, 'rgba(255, 249, 235, 1)')
-    halo.addColorStop(0.1, 'rgba(255, 232, 192, 0.95)')
-    halo.addColorStop(0.22, 'rgba(255, 185, 96, 0.8)')
-    halo.addColorStop(0.45, 'rgba(255, 156, 76, 0.34)')
-    halo.addColorStop(1, 'rgba(255, 156, 76, 0)')
+    halo.addColorStop(0, 'rgba(255, 247, 226, 0.9)')
+    halo.addColorStop(0.16, 'rgba(255, 214, 156, 0.56)')
+    halo.addColorStop(0.42, 'rgba(255, 171, 88, 0.2)')
+    halo.addColorStop(1, 'rgba(255, 171, 88, 0)')
 
     context.fillStyle = halo
     context.fillRect(0, 0, width, height)
+  })
+}
+
+function createSunStarburstTexture() {
+  return buildTexture(768, 768, (context, width, height) => {
+    const centerX = width / 2
+    const centerY = height / 2
+
+    context.clearRect(0, 0, width, height)
+
+    const rays = [
+      { angle: -0.08, width: 10, reach: 0.48, alpha: 0.58 },
+      { angle: Math.PI - 0.08, width: 10, reach: 0.48, alpha: 0.58 },
+      { angle: Math.PI / 2 + 0.12, width: 4, reach: 0.32, alpha: 0.28 },
+      { angle: -Math.PI / 2 + 0.12, width: 4, reach: 0.32, alpha: 0.28 },
+      { angle: Math.PI / 4, width: 3, reach: 0.28, alpha: 0.18 },
+      { angle: -Math.PI / 4, width: 3, reach: 0.28, alpha: 0.18 }
+    ]
+
+    rays.forEach((ray) => {
+      const outerX = centerX + Math.cos(ray.angle) * width * ray.reach
+      const outerY = centerY + Math.sin(ray.angle) * height * ray.reach
+
+      const gradient = context.createLinearGradient(centerX, centerY, outerX, outerY)
+      gradient.addColorStop(0, `rgba(255, 240, 204, ${ray.alpha})`)
+      gradient.addColorStop(0.28, `rgba(255, 204, 122, ${ray.alpha * 0.45})`)
+      gradient.addColorStop(1, 'rgba(255, 204, 122, 0)')
+
+      context.strokeStyle = gradient
+      context.lineWidth = ray.width
+      context.beginPath()
+      context.moveTo(centerX, centerY)
+      context.lineTo(outerX, outerY)
+      context.stroke()
+    })
   })
 }
 
@@ -132,6 +173,20 @@ function createGalaxyTexture(primaryTint, secondaryTint) {
       context.arc(x, y, radius, 0, Math.PI * 2)
       context.fill()
     }
+
+    context.save()
+    context.globalCompositeOperation = 'destination-out'
+    context.filter = 'blur(18px)'
+    for (let index = 0; index < 16; index += 1) {
+      const progress = index / 15
+      const x = width * (0.08 + progress * 0.84)
+      const y = height * (0.68 - progress * 0.42 + (random() - 0.5) * 0.1)
+      context.fillStyle = 'rgba(0, 0, 0, 0.24)'
+      context.beginPath()
+      context.ellipse(x, y, 80 + random() * 130, 7 + random() * 18, -0.25, 0, Math.PI * 2)
+      context.fill()
+    }
+    context.restore()
   })
 }
 
@@ -160,21 +215,33 @@ function GalaxyBand({ opacity, profile, texture }) {
   )
 }
 
-function SunField({ opacity, profile, texture }) {
+function SunField({ opacity, profile, textures }) {
   if (!profile?.visible || opacity <= 0.01) {
     return null
   }
 
   return (
     <group position={profile.position} renderOrder={-20}>
+      <sprite scale={profile.starburstScale ?? [profile.glowScale, profile.glowScale * 0.6, 1]} rotation={[0, 0, -0.08]}>
+        <spriteMaterial
+          blending={AdditiveBlending}
+          color={profile.haloColor}
+          depthTest={false}
+          depthWrite={false}
+          map={textures.starburst}
+          opacity={opacity * (profile.starburstOpacity ?? 0.14)}
+          toneMapped={false}
+          transparent
+        />
+      </sprite>
       <sprite scale={[profile.glowScale, profile.glowScale, 1]}>
         <spriteMaterial
           blending={AdditiveBlending}
           color={profile.haloColor}
           depthTest={false}
           depthWrite={false}
-          map={texture}
-          opacity={opacity * 0.22}
+          map={textures.halo}
+          opacity={opacity * (profile.glowOpacity ?? 0.1)}
           toneMapped={false}
           transparent
         />
@@ -185,20 +252,20 @@ function SunField({ opacity, profile, texture }) {
           color={profile.haloColor}
           depthTest={false}
           depthWrite={false}
-          map={texture}
-          opacity={opacity * 0.42}
+          map={textures.halo}
+          opacity={opacity * (profile.haloOpacity ?? 0.3)}
           toneMapped={false}
           transparent
         />
       </sprite>
-      <sprite scale={[profile.coreScale, profile.coreScale, 1]}>
+      <sprite scale={[profile.discScale ?? profile.coreScale, profile.discScale ?? profile.coreScale, 1]}>
         <spriteMaterial
           blending={AdditiveBlending}
           color={profile.coreColor}
           depthTest={false}
           depthWrite={false}
-          map={texture}
-          opacity={opacity * 0.95}
+          map={textures.disc}
+          opacity={opacity * (profile.discOpacity ?? 1)}
           toneMapped={false}
           transparent
         />
@@ -216,7 +283,14 @@ export default function SceneEnvironment({
   const environmentMultiplier =
     presentationProfile.sceneTone.environmentOpacityMultiplier
   const earthTextures = useEarthLimbTextures(environmentProfile.earth.presentation)
-  const sunTexture = useMemo(() => createSunTexture(), [])
+  const sunTextures = useMemo(
+    () => ({
+      disc: createSunDiscTexture(),
+      halo: createSunHaloTexture(),
+      starburst: createSunStarburstTexture()
+    }),
+    []
+  )
   const galaxyTexture = useMemo(
     () =>
       createGalaxyTexture(
@@ -282,7 +356,7 @@ export default function SceneEnvironment({
       <SunField
         opacity={sunOpacity}
         profile={environmentProfile.sun}
-        texture={sunTexture}
+        textures={sunTextures}
       />
       <EarthLimb
         cloudTexture={earthTextures.cloudTexture}

@@ -9,6 +9,7 @@ import SceneEnvironment from './SceneEnvironment'
 import SceneLighting from './SceneLighting'
 import Spacecraft from './Spacecraft'
 import {
+  cameraControlProfiles,
   cameraControlTuning,
   cameraPresets,
   subsystems
@@ -79,8 +80,11 @@ function CameraRig({
     }
 
     const controls = controlsRef.current
+    const preset = cameraPresets[activeCameraPreset] ?? cameraPresets.heroTechnical
+    const controlProfile =
+      cameraControlProfiles[preset.controlProfile] ?? cameraControlProfiles.system
     const transitionDamp =
-      1 - Math.exp(-delta * cameraControlTuning.transitionSharpness)
+      1 - Math.exp(-delta * (controlProfile.transitionSharpness ?? cameraControlTuning.transitionSharpness))
     const focusDamp =
       1 - Math.exp(-delta * cameraControlTuning.focusLockSharpness)
 
@@ -115,22 +119,25 @@ function CameraRig({
 
   const effectivePanEnabled =
     cameraPanEnabled && !(cameraPresets[activeCameraPreset]?.lockPan ?? false)
+  const activePreset = cameraPresets[activeCameraPreset] ?? cameraPresets.heroTechnical
+  const activeControlProfile =
+    cameraControlProfiles[activePreset.controlProfile] ?? cameraControlProfiles.system
 
   return (
     <OrbitControls
-      dampingFactor={cameraControlTuning.dampingFactor}
+      dampingFactor={activeControlProfile.dampingFactor ?? cameraControlTuning.dampingFactor}
       enableDamping
       enablePan={effectivePanEnabled}
       enableZoom
       makeDefault
-      maxDistance={cameraControlTuning.maxDistance}
-      maxPolarAngle={cameraControlTuning.maxPolarAngle}
-      minDistance={cameraControlTuning.minDistance}
-      minPolarAngle={cameraControlTuning.minPolarAngle}
-      panSpeed={cameraControlTuning.panSpeed}
+      maxDistance={activeControlProfile.maxDistance ?? cameraControlTuning.maxDistance}
+      maxPolarAngle={activeControlProfile.maxPolarAngle ?? cameraControlTuning.maxPolarAngle}
+      minDistance={activeControlProfile.minDistance ?? cameraControlTuning.minDistance}
+      minPolarAngle={activeControlProfile.minPolarAngle ?? cameraControlTuning.minPolarAngle}
+      panSpeed={activeControlProfile.panSpeed ?? cameraControlTuning.panSpeed}
       ref={controlsRef}
-      rotateSpeed={cameraControlTuning.rotateSpeed}
-      zoomSpeed={cameraControlTuning.zoomSpeed}
+      rotateSpeed={activeControlProfile.rotateSpeed ?? cameraControlTuning.rotateSpeed}
+      zoomSpeed={activeControlProfile.zoomSpeed ?? cameraControlTuning.zoomSpeed}
     />
   )
 }
@@ -216,8 +223,8 @@ export default function SceneRoot({
         camera={{
           fov: cameraPresets.heroTechnical.fov,
           position: cameraPresets.heroTechnical.position,
-          near: 0.1,
-          far: 420
+          near: 0.03,
+          far: 680
         }}
         dpr={[1, 1.8]}
         gl={{ alpha: true, antialias: true }}

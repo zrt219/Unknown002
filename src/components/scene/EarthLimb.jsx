@@ -3,6 +3,7 @@ import {
   AdditiveBlending,
   CanvasTexture,
   ClampToEdgeWrapping,
+  Color,
   LinearFilter
 } from 'three'
 
@@ -54,7 +55,15 @@ function createEarthSurfaceTexture(presentation) {
     context.fillStyle = oceanGradient
     context.fillRect(0, 0, width, height)
 
-    const terminator = context.createLinearGradient(0, 0, width, height)
+    const direction = presentation.terminator.direction ?? [-34, 20, 14]
+    const magnitude = Math.hypot(direction[0], direction[1]) || 1
+    const sunX = direction[0] / magnitude
+    const sunY = -direction[1] / magnitude
+    const startX = width * (0.5 - sunX * 0.58)
+    const startY = height * (0.5 - sunY * 0.58)
+    const endX = width * (0.5 + sunX * 0.58)
+    const endY = height * (0.5 + sunY * 0.58)
+    const terminator = context.createLinearGradient(startX, startY, endX, endY)
     terminator.addColorStop(0, 'rgba(255, 230, 184, 0.12)')
     terminator.addColorStop(0.46, 'rgba(0, 0, 0, 0)')
     terminator.addColorStop(0.72, `rgba(0, 0, 0, ${presentation.terminator.nightOpacity})`)
@@ -62,11 +71,11 @@ function createEarthSurfaceTexture(presentation) {
 
     context.save()
     context.globalAlpha = 0.34
-    for (let index = 0; index < 28; index += 1) {
+    for (let index = 0; index < 18; index += 1) {
       const x = width * (0.12 + random() * 0.76)
       const y = height * (0.16 + random() * 0.64)
-      const radiusX = 32 + random() * 126
-      const radiusY = 14 + random() * 62
+      const radiusX = 54 + random() * 170
+      const radiusY = 18 + random() * 78
       const rotation = random() * Math.PI
 
       context.translate(x, y)
@@ -92,7 +101,10 @@ function createEarthSurfaceTexture(presentation) {
     for (let index = 0; index < 2600; index += 1) {
       const x = width * (0.1 + random() * 0.8)
       const y = height * (0.45 + random() * 0.42)
-      const darkness = Math.max(0, (x + y - width * 0.94) / (width * 0.7))
+      const projection =
+        ((x - width / 2) / width) * sunX +
+        ((y - height / 2) / height) * sunY
+      const darkness = Math.max(0, -projection * 1.8 + 0.04)
 
       if (darkness <= 0.06) {
         continue
@@ -118,7 +130,7 @@ function createCloudTexture(presentation) {
     context.globalAlpha = 0.32
     context.filter = 'blur(8px)'
 
-    for (let band = 0; band < 9; band += 1) {
+    for (let band = 0; band < 8; band += 1) {
       const y = height * (0.22 + band * 0.07 + (random() - 0.5) * 0.04)
       const rotation = -0.22 + random() * 0.2
 
@@ -140,11 +152,80 @@ function createCloudTexture(presentation) {
     }
 
     context.restore()
+
+    context.save()
+    context.globalAlpha = 0.18
+    context.filter = 'blur(3px)'
+    for (let storm = 0; storm < 6; storm += 1) {
+      const x = width * (0.18 + random() * 0.68)
+      const y = height * (0.18 + random() * 0.62)
+      context.save()
+      context.translate(x, y)
+      context.rotate(random() * Math.PI)
+      for (let arm = 0; arm < 4; arm += 1) {
+        context.rotate(Math.PI / 2)
+        context.beginPath()
+        context.ellipse(18 + arm * 14, arm * 5, 48 - arm * 7, 9, 0.4, 0, Math.PI * 2)
+        context.fillStyle = presentation.texture.cloudColor
+        context.fill()
+      }
+      context.restore()
+    }
+    context.restore()
   })
 }
 
 function getSceneOpacity(mapping, sceneMode, fallback = 1) {
   return mapping?.[sceneMode] ?? fallback
+}
+
+function AtmosphereShell({
+  color,
+  opacity,
+  radius,
+  renderOrder,
+  scale,
+  power = 2.1
+}) {
+  return (
+    <mesh scale={scale} renderOrder={renderOrder}>
+      <sphereGeometry args={[radius, 96, 96]} />
+      <shaderMaterial
+        blending={AdditiveBlending}
+        depthWrite={false}
+        fragmentShader={`
+          varying vec3 vNormal;
+          varying vec3 vViewPosition;
+          uniform vec3 uColor;
+          uniform float uOpacity;
+          uniform float uPower;
+
+          void main() {
+            vec3 viewDirection = normalize(vViewPosition);
+            float fresnel = pow(1.0 - abs(dot(normalize(vNormal), viewDirection)), uPower);
+            gl_FragColor = vec4(uColor, fresnel * uOpacity);
+          }
+        `}
+        transparent
+        uniforms={{
+          uColor: { value: new Color(color) },
+          uOpacity: { value: opacity },
+          uPower: { value: power }
+        }}
+        vertexShader={`
+          varying vec3 vNormal;
+          varying vec3 vViewPosition;
+
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            vViewPosition = -mvPosition.xyz;
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `}
+      />
+    </mesh>
+  )
 }
 
 export default function EarthLimb({
@@ -186,36 +267,29 @@ export default function EarthLimb({
           transparent
         />
       </mesh>
-      <mesh scale={presentation.atmosphere.innerScale} renderOrder={-21}>
-        <sphereGeometry args={[profile.radius, 128, 128]} />
-        <meshBasicMaterial
-          blending={AdditiveBlending}
-          color={presentation.atmosphere.color}
-          opacity={opacity * atmosphereOpacity}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
-      <mesh scale={presentation.atmosphere.outerScale} renderOrder={-20.9}>
-        <sphereGeometry args={[profile.radius, 128, 128]} />
-        <meshBasicMaterial
-          blending={AdditiveBlending}
-          color={presentation.atmosphere.rimColor}
-          opacity={opacity * atmosphereOpacity * 0.24}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
-      <mesh scale={presentation.atmosphere.limbScale} renderOrder={-20.8}>
-        <sphereGeometry args={[profile.radius, 128, 128]} />
-        <meshBasicMaterial
-          blending={AdditiveBlending}
-          color={presentation.atmosphere.limbColor}
-          opacity={opacity * atmosphereOpacity * 0.11}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
+      <AtmosphereShell
+        color={presentation.atmosphere.color}
+        opacity={opacity * atmosphereOpacity * 0.75}
+        radius={profile.radius}
+        renderOrder={-21}
+        scale={presentation.atmosphere.innerScale}
+      />
+      <AtmosphereShell
+        color={presentation.atmosphere.rimColor}
+        opacity={opacity * atmosphereOpacity * 0.55}
+        power={3.2}
+        radius={profile.radius}
+        renderOrder={-20.9}
+        scale={presentation.atmosphere.outerScale}
+      />
+      <AtmosphereShell
+        color={presentation.atmosphere.limbColor}
+        opacity={opacity * atmosphereOpacity * 0.34}
+        power={4}
+        radius={profile.radius}
+        renderOrder={-20.8}
+        scale={presentation.atmosphere.limbScale}
+      />
     </group>
   )
 }

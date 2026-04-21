@@ -14,10 +14,16 @@ export default function CameraTools({
       <button className="secondary-button" onClick={onFitSelection} type="button">
         Fit to Selection
       </button>
-      <button className="secondary-button" onClick={onTogglePan} type="button">
+      <button
+        aria-pressed={cameraPanEnabled}
+        className="secondary-button"
+        onClick={onTogglePan}
+        type="button"
+      >
         Pan: {cameraPanEnabled ? 'On' : 'Off'}
       </button>
       <button
+        aria-pressed={cameraMode === 'focusLock'}
         className="secondary-button"
         onClick={onToggleCameraMode}
         type="button"

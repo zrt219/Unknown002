@@ -8,7 +8,7 @@ export default function SceneEnvironmentControls({
 }) {
   return (
     <div className="environment-controls">
-      <div className="environment-grid" role="radiogroup" aria-label="Scene Environment">
+      <div className="environment-grid" role="radiogroup" aria-label="Orbital scene treatment">
         {environmentOptions.map((option) => (
           <label className="environment-option" key={option.key}>
             <input
@@ -27,15 +27,18 @@ export default function SceneEnvironmentControls({
       </div>
 
       <label className="toggle-row">
-        <span>Auto-select best scene for view mode</span>
+        <span>Auto-select best treatment for view mode</span>
         <input
-          aria-label="Auto-select best scene for view mode"
+          aria-label="Auto-select best treatment for view mode"
           checked={autoFollowModeScene}
           onChange={onToggleAutoFollow}
           type="checkbox"
         />
       </label>
 
+      <p className="section-helper">
+        One fixed Earth, sun, and starfield. These choices tune readability only.
+      </p>
       <p className="section-helper">{recommendation}</p>
     </div>
   )
