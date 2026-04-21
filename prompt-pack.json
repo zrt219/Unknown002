@@ -1,0 +1,50 @@
+{
+  "project": "ZRT UNKNOWN02 Technical Viewer",
+  "version_date": "2026-04-17",
+  "prompts": [
+    {
+      "number": 1,
+      "file": "prompts/01_repo_bootstrap_architecture.md",
+      "branch": "feature/01-viewer-architecture"
+    },
+    {
+      "number": 2,
+      "file": "prompts/02_realistic_spacecraft_geometry.md",
+      "branch": "feature/02-spacecraft-geometry"
+    },
+    {
+      "number": 3,
+      "file": "prompts/03_brayton_cycle_energy_overlay.md",
+      "branch": "feature/03-brayton-energy-flow"
+    },
+    {
+      "number": 4,
+      "file": "prompts/04_inspection_modes_engineering_ui.md",
+      "branch": "feature/04-inspection-ui"
+    },
+    {
+      "number": 5,
+      "file": "prompts/05_github_vercel_qa_release_prep.md",
+      "branch": "feature/05-release-qa-vercel"
+    },
+    {
+      "number": 6,
+      "file": "prompts/06_visual_polish_realism_pass.md",
+      "branch": "feature/06-visual-realism-polish"
+    },
+    {
+      "number": 7,
+      "file": "prompts/07_case_study_readme_public_release.md",
+      "branch": "feature/07-case-study-public-release"
+    }
+  ],
+  "core_stack": [
+    "React",
+    "Vite",
+    "React Three Fiber",
+    "Three.js",
+    "Drei",
+    "Vercel"
+  ],
+  "global_instruction": "Always spawn subagents first before implementation."
+}

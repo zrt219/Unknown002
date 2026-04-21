@@ -1,0 +1,9 @@
+.vercel
+node_modules
+dist
+.env
+.env.*
+*.log
+.tmp-*.err
+.tmp-*.log
+*.zip
