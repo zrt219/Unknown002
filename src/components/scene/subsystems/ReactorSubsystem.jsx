@@ -88,6 +88,37 @@ export default function ReactorSubsystem({
         </mesh>
       ))}
 
+      {[-0.95, 0.95].flatMap((y) =>
+        [-0.95, 0.95].map((z) => (
+          <mesh key={`reactor-cage-${y}-${z}`} castShadow position={[0.15, y, z]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.055, 0.055, 4.05, 8]} />
+            <meshStandardMaterial color="#8d96a4" metalness={0.32} roughness={0.5} />
+          </mesh>
+        ))
+      )}
+
+      {[-1.9, 2.02].map((x) => (
+        <group key={`reactor-end-frame-${x}`} position={[x, 0, 0]}>
+          {[-0.88, 0.88].flatMap((y) =>
+            [-0.88, 0.88].map((z) => (
+              <mesh key={`lug-${y}-${z}`} castShadow position={[0, y, z]} scale={[0.22, 0.28, 0.28]}>
+                <boxGeometry args={[1, 1, 1]} />
+                <meshStandardMaterial color="#727c8a" metalness={0.28} roughness={0.56} />
+              </mesh>
+            ))
+          )}
+        </group>
+      ))}
+
+      <mesh castShadow position={[2.75, 0.58, 0.78]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.18, 0.18, 0.42, 12]} />
+        <meshStandardMaterial color="#a17952" metalness={0.26} roughness={0.54} />
+      </mesh>
+      <mesh castShadow position={[2.75, -0.58, -0.78]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.18, 0.18, 0.42, 12]} />
+        <meshStandardMaterial color="#a17952" metalness={0.26} roughness={0.54} />
+      </mesh>
+
       {[
         [0.1, 1.2, 0],
         [0.2, -1.2, 0],
@@ -112,6 +143,8 @@ export default function ReactorSubsystem({
 
       <Pipe color="#8f99a7" position={[2.95, 0.58, 0.78]} rotation={[0.28, 0, Math.PI / 2]} length={2.35} radius={0.08} />
       <Pipe color="#8f99a7" position={[2.95, -0.58, -0.78]} rotation={[-0.28, 0, Math.PI / 2]} length={2.35} radius={0.08} />
+      <Pipe color="#b48a5e" position={[3.2, 0.15, 0.42]} rotation={[0.16, 0, Math.PI / 2]} length={2.1} radius={0.055} />
+      <Pipe color="#b48a5e" position={[3.2, -0.15, -0.42]} rotation={[-0.16, 0, Math.PI / 2]} length={2.1} radius={0.055} />
       <Pipe color="#66707c" position={[-0.35, -1.45, 0]} rotation={[0, 0, Math.PI / 2]} length={1.65} radius={0.09} />
       <Pipe color="#66707c" position={[-0.35, 1.45, 0]} rotation={[0, 0, Math.PI / 2]} length={1.65} radius={0.09} />
     </group>

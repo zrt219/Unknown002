@@ -167,15 +167,56 @@ describe('spacecraftConfig', () => {
     expect(spacecraftStructure.axialLinks.length).toBeGreaterThanOrEqual(4)
     expect(spacecraftStructure.harnessRoutes.length).toBeGreaterThanOrEqual(2)
     expect(spacecraftStructure.forwardSection.boomAdapterStruts.length).toBeGreaterThanOrEqual(4)
-    expect(spacecraftStructure.forwardSection.pmadHarnessRoutes.length).toBeGreaterThanOrEqual(3)
+    expect(spacecraftStructure.boom.cableClampOffsets.length).toBeGreaterThanOrEqual(3)
+    expect(spacecraftStructure.forwardSection.pmadHarnessRoutes.length).toBeGreaterThanOrEqual(7)
     expect(spacecraftStructure.forwardSection.pmadRack.modules.length).toBeGreaterThanOrEqual(3)
     expect(spacecraftStructure.forwardSection.pmadRack.connectorRoutes.length).toBeGreaterThanOrEqual(2)
-    expect(spacecraftStructure.forwardSection.propellantFeedRoutes.length).toBeGreaterThanOrEqual(2)
+    expect(spacecraftStructure.forwardSection.propellantFeedRoutes.length).toBeGreaterThanOrEqual(4)
+    expect(spacecraftStructure.forwardSection.propellantManifold.position).toEqual(
+      expect.any(Array)
+    )
     expect(spacecraftStructure.forwardSection.tankSaddles.length).toBeGreaterThanOrEqual(4)
+    expect(spacecraftStructure.forwardSection.tankClampBands).toHaveLength(4)
+    expect(spacecraftStructure.forwardSection.tankHardpoints.length).toBeGreaterThanOrEqual(8)
     expect(spacecraftStructure.forwardSection.payloadMount.struts.length).toBeGreaterThanOrEqual(2)
     expect(spacecraftStructure.forwardSection.payloadMount.backboneLength).toBeGreaterThan(1)
     expect(spacecraftStructure.propulsionFrame.clusterRoot.scale[0]).toBeGreaterThan(0.5)
     expect(spacecraftStructure.propulsionFrame.thrusterOffsets).toHaveLength(4)
+    expect(spacecraftStructure.propulsionFrame.mountPlates).toHaveLength(4)
+    expect(spacecraftStructure.propulsionFrame.gimbalRings).toHaveLength(4)
+  })
+
+  it('locks the prompt 02 spacecraft architecture proportions', () => {
+    const engineeringChain = [
+      'reactor',
+      'shield',
+      'braytonPowerUnit',
+      'radiators',
+      'separationBoom',
+      'spacecraftBus',
+      'propellantTanks',
+      'electricThrusters'
+    ]
+    const orderedXPositions = engineeringChain.map((key) => subsystems[key].position[0])
+
+    orderedXPositions.slice(1).forEach((xPosition, index) => {
+      expect(xPosition).toBeGreaterThan(orderedXPositions[index])
+    })
+
+    expect(subsystems.shield.position[0]).toBeGreaterThan(subsystems.reactor.position[0])
+    expect(subsystems.shield.position[0]).toBeLessThan(subsystems.spacecraftBus.position[0])
+    expect(subsystems.radiators.position[0]).toBeLessThan(subsystems.spacecraftBus.position[0])
+    expect(subsystems.separationBoom.position[0]).toBeLessThan(subsystems.spacecraftBus.position[0])
+    expect(subsystems.sciencePayload.position[0]).toBeGreaterThan(subsystems.spacecraftBus.position[0] - 1)
+    expect(subsystems.sciencePayload.position[0]).toBeLessThan(subsystems.electricThrusters.position[0])
+    expect(subsystems.electricThrusters.position[0]).toBeGreaterThan(subsystems.propellantTanks.position[0])
+
+    const boomSpan =
+      spacecraftStructure.boom.segments * spacecraftStructure.boom.spacing
+    expect(boomSpan).toBeGreaterThan(14)
+    expect(spacecraftStructure.propulsionFrame.thrusterOffsets.length).toBe(4)
+    expect(spacecraftStructure.tankRack.spineLength).toBeLessThan(5)
+    expect(subsystems.reactor.note).toMatch(/not a thrust engine/i)
   })
 
   it('defines route groups and thermodynamic stages for prompt 03 overlays', () => {

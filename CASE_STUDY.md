@@ -141,6 +141,13 @@ Beautiful Sun Prompt 03-04 establishes:
 - a composition-lock model where mode switches do not yank the camera
 - per-mode reset presets that stay in one coherent orbital shot family
 
+Final Nail Prompt 02-03 establishes:
+
+- a stronger close-up model for the reactor, shield, Brayton conversion cluster, radiator roots, and thermal interface plumbing
+- corrected truss bay bracing with visible nodes, boom clamp bands, and bus-side adapter clevis details
+- PMAD/tank/thruster hardware that distinguishes conditioned power harnesses from propellant feed routing
+- electric thruster faces with ion-grid cues, gimbal rings, and restrained plume logic instead of chemical-engine language
+
 ## 6. System Architecture
 
 The spacecraft uses a long axial layout:

@@ -346,6 +346,7 @@ This repository still includes the staged prompt workflow used to bootstrap and 
 - Prompt 12: final NASA-style QA, release documentation, realism checklist, and GitHub/Vercel release preparation
 - Beautiful Sun Prompt 01-02: persistent orbital environment bible and fixed-direction hero sun rig
 - Beautiful Sun Prompt 03-04: premium Earth limb, atmosphere layers, and persistent composition/camera discipline
+- Final Nail Prompt 02-03: spacecraft architecture rebuild and close-up realism density for reactor, shield, Brayton, radiators, boom, PMAD, tanks, and electric thrusters
 
 ## Limitations
 

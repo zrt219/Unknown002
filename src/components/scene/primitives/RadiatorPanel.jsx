@@ -26,6 +26,20 @@ export default function RadiatorPanel({ position = [0, 0, 0], scale = [1, 1, 1] 
         </mesh>
       ))}
 
+      {[-1.45, 0, 1.45].map((z, index) => (
+        <mesh key={`coolant-pass-${z}`} position={[0, -0.16, z]}>
+          <boxGeometry args={[6.9 - index * 0.35, 0.055, 0.055]} />
+          <meshStandardMaterial color={index === 1 ? '#8fb6df' : '#7180a8'} metalness={0.12} roughness={0.72} />
+        </mesh>
+      ))}
+
+      {[-3.05, -1.55, 0, 1.55, 3.05].map((x) => (
+        <mesh key={`return-u-${x}`} position={[x, -0.14, 1.45]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.72, 0.025, 8, 18, Math.PI]} />
+          <meshStandardMaterial color="#7f9fc7" metalness={0.12} roughness={0.7} />
+        </mesh>
+      ))}
+
       <mesh position={[-3.75, 0.14, 0]}>
         <boxGeometry args={[0.22, 0.12, 4.26]} />
         <meshStandardMaterial color={colors.radiatorEdge} metalness={0.22} roughness={0.58} />

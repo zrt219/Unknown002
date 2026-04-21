@@ -64,6 +64,20 @@ export default function ElectricPropulsion({
         </mesh>
       ))}
 
+      {spacecraftStructure.propulsionFrame.mountPlates.map((plate, index) => (
+        <mesh key={`thruster-mount-plate-${index}`} castShadow position={plate.position} scale={plate.scale}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="#737f8f" metalness={0.28} roughness={0.54} />
+        </mesh>
+      ))}
+
+      {spacecraftStructure.propulsionFrame.gimbalRings.map((ring, index) => (
+        <mesh key={`thruster-gimbal-${index}`} castShadow position={ring.position} rotation={[0, 0, Math.PI / 2]}>
+          <torusGeometry args={[ring.radius, ring.tube, 10, 24]} />
+          <meshStandardMaterial color="#9aa6b5" metalness={0.34} roughness={0.46} />
+        </mesh>
+      ))}
+
       {thrusterOffsets.map((offset) => (
         <Thruster
           animationSpeed={animationSpeed}

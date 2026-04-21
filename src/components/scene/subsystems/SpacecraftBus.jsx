@@ -39,6 +39,20 @@ export default function SpacecraftBus({ isSelected, onSelect, selectedSubsystem 
         <meshStandardMaterial color="#5a6470" metalness={0.22} roughness={0.66} />
       </mesh>
 
+      {[-1.35, -0.2, 0.95].map((x) => (
+        <mesh key={`bus-panel-seam-${x}`} position={[x, 0, 1.72]} scale={[0.035, 2.34, 0.035]}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="#313946" metalness={0.08} roughness={0.78} />
+        </mesh>
+      ))}
+
+      {[-1.1, 0.15, 1.4].map((x) => (
+        <mesh key={`bus-service-rail-${x}`} castShadow position={[x, -1.72, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.045, 0.045, 2.85, 8]} />
+          <meshStandardMaterial color="#8793a1" metalness={0.26} roughness={0.54} />
+        </mesh>
+      ))}
+
       <EquipmentBox color="#6f7784" position={[-1.8, 1.7, 0.95]} scale={[1.2, 0.85, 0.5]} />
       <EquipmentBox color="#6f7784" position={[-1.8, 1.7, -0.95]} scale={[1.2, 0.85, 0.5]} />
       <EquipmentBox color="#5d6673" position={[-2.15, -0.7, 0]} scale={[0.55, 1.15, 1.1]} />
@@ -66,6 +80,17 @@ export default function SpacecraftBus({ isSelected, onSelect, selectedSubsystem 
           scale={module.scale}
           userData={{ subsystemId: 'pmad' }}
         />
+      ))}
+
+      {spacecraftStructure.forwardSection.pmadRack.modules.map((module, index) => (
+        <group key={`pmad-face-detail-${index}`} position={[module.position[0] - position[0] + 0.48, module.position[1] - position[1], module.position[2]]}>
+          {[-0.18, 0.18].map((offset) => (
+            <mesh key={`connector-${offset}`} castShadow position={[0, offset, 0.3]} scale={[0.1, 0.08, 0.08]}>
+              <boxGeometry args={[1, 1, 1]} />
+              <meshStandardMaterial color="#b9c0a0" metalness={0.2} roughness={0.56} />
+            </mesh>
+          ))}
+        </group>
       ))}
 
       <EquipmentBox

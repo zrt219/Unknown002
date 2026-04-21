@@ -60,6 +60,33 @@ export default function PropellantTanks({ isSelected, onSelect }) {
         </mesh>
       ))}
 
+      {spacecraftStructure.forwardSection.tankClampBands.map((band, index) => (
+        <mesh key={`tank-clamp-band-${index}`} castShadow position={[band.position[0] - position[0], band.position[1] - position[1], band.position[2]]} rotation={band.rotation}>
+          <torusGeometry args={[1.42, 0.04, 10, 28]} />
+          <meshStandardMaterial color="#8b97a8" metalness={0.26} roughness={0.54} />
+        </mesh>
+      ))}
+
+      {spacecraftStructure.forwardSection.tankHardpoints.map((hardpoint, index) => (
+        <mesh key={`tank-hardpoint-${index}`} castShadow position={[hardpoint.position[0] - position[0], hardpoint.position[1] - position[1], hardpoint.position[2]]} scale={hardpoint.scale}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="#7c8797" metalness={0.24} roughness={0.58} />
+        </mesh>
+      ))}
+
+      <mesh
+        castShadow
+        position={[
+          spacecraftStructure.forwardSection.propellantManifold.position[0] - position[0],
+          spacecraftStructure.forwardSection.propellantManifold.position[1] - position[1],
+          spacecraftStructure.forwardSection.propellantManifold.position[2]
+        ]}
+        scale={spacecraftStructure.forwardSection.propellantManifold.scale}
+      >
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="#758190" metalness={0.24} roughness={0.58} />
+      </mesh>
+
       <Pipe position={[1.8, 0.1, 0.7]} rotation={[0.2, 0, Math.PI / 2]} length={4.5} />
       <Pipe position={[1.8, -0.1, -0.7]} rotation={[-0.2, 0, Math.PI / 2]} length={4.5} />
       <Pipe color="#95a0ae" position={[-1.55, 0.85, 1.2]} rotation={[0.2, 0, 0.72]} scale={[1, 2.25, 1]} />
@@ -89,7 +116,7 @@ export default function PropellantTanks({ isSelected, onSelect }) {
                 key={`feed-segment-${index}-${routeIndex}`}
                 length={length}
                 position={midpoint}
-                radius={0.055}
+                radius={routeIndex === 0 ? 0.045 : 0.04}
                 rotation={[Math.PI / 2 - pitch, yaw, 0]}
               />
             )
