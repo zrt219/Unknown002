@@ -32,8 +32,45 @@ input {
 }
 
 .app-shell {
+  --mode-accent: #7dd3fc;
+  --mode-accent-soft: rgba(125, 211, 252, 0.16);
+  --mode-panel: rgba(7, 12, 23, 0.78);
+  --mode-panel-border: rgba(125, 211, 252, 0.16);
+  --mode-chip: rgba(15, 23, 42, 0.78);
   height: 100%;
   position: relative;
+}
+
+.scene-mode-clean {
+  --mode-accent: #8fd8ff;
+  --mode-accent-soft: rgba(143, 216, 255, 0.2);
+  --mode-panel: rgba(3, 8, 18, 0.58);
+  --mode-panel-border: rgba(143, 216, 255, 0.14);
+  --mode-chip: rgba(8, 17, 32, 0.64);
+}
+
+.scene-mode-engineering {
+  --mode-accent: #7dd3fc;
+  --mode-accent-soft: rgba(125, 211, 252, 0.18);
+  --mode-panel: rgba(6, 12, 23, 0.84);
+  --mode-panel-border: rgba(125, 211, 252, 0.2);
+  --mode-chip: rgba(15, 23, 42, 0.84);
+}
+
+.scene-mode-energy {
+  --mode-accent: #facc15;
+  --mode-accent-soft: rgba(250, 204, 21, 0.18);
+  --mode-panel: rgba(12, 10, 5, 0.84);
+  --mode-panel-border: rgba(250, 204, 21, 0.2);
+  --mode-chip: rgba(26, 20, 8, 0.86);
+}
+
+.scene-mode-thermal {
+  --mode-accent: #fb923c;
+  --mode-accent-soft: rgba(251, 146, 60, 0.2);
+  --mode-panel: rgba(15, 8, 5, 0.86);
+  --mode-panel-border: rgba(251, 146, 60, 0.22);
+  --mode-chip: rgba(28, 14, 8, 0.88);
 }
 
 .capture-ui-hidden .viewer-stage {
@@ -64,8 +101,8 @@ input {
 
 .hud-panel {
   backdrop-filter: blur(16px);
-  background: rgba(7, 12, 23, 0.78);
-  border: 1px solid rgba(125, 211, 252, 0.16);
+  background: var(--mode-panel);
+  border: 1px solid var(--mode-panel-border);
   border-radius: 20px;
   box-shadow: 0 24px 70px rgba(2, 6, 23, 0.48);
   display: grid;
@@ -80,13 +117,23 @@ input {
   z-index: 5;
 }
 
+.hud-variant-presentation .hud-panel {
+  gap: 0.85rem;
+  width: min(22.5rem, calc(100% - 2.4rem));
+}
+
+.hud-variant-energy .hud-panel,
+.hud-variant-thermal .hud-panel {
+  width: min(24rem, calc(100% - 2.4rem));
+}
+
 .hud-header h1,
 .hud-section h2 {
   margin: 0;
 }
 
 .eyebrow {
-  color: #7dd3fc;
+  color: var(--mode-accent);
   font-size: 0.76rem;
   letter-spacing: 0.16em;
   margin: 0 0 0.55rem;
@@ -147,7 +194,7 @@ input {
 }
 
 .toggle-row input {
-  accent-color: #7dd3fc;
+  accent-color: var(--mode-accent);
 }
 
 .toggle-row[data-disabled='true'] {
@@ -155,8 +202,8 @@ input {
 }
 
 .toggle-row.emphasized {
-  background: rgba(125, 211, 252, 0.06);
-  border: 1px solid rgba(125, 211, 252, 0.14);
+  background: var(--mode-accent-soft);
+  border: 1px solid var(--mode-panel-border);
   border-radius: 12px;
   padding: 0.55rem 0.7rem;
 }
@@ -173,12 +220,12 @@ input {
 }
 
 .slider-copy strong {
-  color: #7dd3fc;
+  color: var(--mode-accent);
   font-size: 0.82rem;
 }
 
 .slider-row input[type='range'] {
-  accent-color: #7dd3fc;
+  accent-color: var(--mode-accent);
   width: 100%;
 }
 
@@ -212,7 +259,7 @@ input {
 
 .environment-option {
   align-items: start;
-  background: rgba(15, 23, 42, 0.78);
+  background: var(--mode-chip);
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 14px;
   cursor: pointer;
@@ -223,7 +270,7 @@ input {
 }
 
 .environment-option input {
-  accent-color: #7dd3fc;
+  accent-color: var(--mode-accent);
   margin-top: 0.2rem;
 }
 
@@ -240,7 +287,7 @@ input {
 }
 
 .camera-button {
-  background: rgba(15, 23, 42, 0.78);
+  background: var(--mode-chip);
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 999px;
   color: #dbeafe;
@@ -253,20 +300,20 @@ input {
 }
 
 .camera-button:hover {
-  border-color: rgba(125, 211, 252, 0.44);
+  border-color: color-mix(in srgb, var(--mode-accent), transparent 56%);
   transform: translateY(-1px);
 }
 
 .camera-button.active {
-  background: rgba(14, 116, 144, 0.34);
-  border-color: rgba(125, 211, 252, 0.58);
+  background: var(--mode-accent-soft);
+  border-color: color-mix(in srgb, var(--mode-accent), transparent 42%);
 }
 
 .secondary-button,
 .focus-button,
 .subsystem-chip,
 .inspection-mode-button {
-  background: rgba(15, 23, 42, 0.78);
+  background: var(--mode-chip);
   border: 1px solid rgba(148, 163, 184, 0.18);
   color: #dbeafe;
 }
@@ -332,8 +379,22 @@ input {
 .subsystem-chip.active,
 .focus-button:hover,
 .secondary-button:hover {
-  background: rgba(14, 116, 144, 0.28);
-  border-color: rgba(125, 211, 252, 0.46);
+  background: var(--mode-accent-soft);
+  border-color: color-mix(in srgb, var(--mode-accent), transparent 48%);
+}
+
+.mode-callout {
+  border-left: 2px solid var(--mode-accent);
+  color: #dbeafe;
+  font-size: 0.78rem;
+  margin: 0;
+  padding-left: 0.75rem;
+}
+
+.priority-mode-section {
+  background: color-mix(in srgb, var(--mode-accent), transparent 92%);
+  border-radius: 16px;
+  padding: 1rem;
 }
 
 .subsystem-list {
@@ -372,7 +433,7 @@ input {
 }
 
 .inspection-details dt {
-  color: #7dd3fc;
+  color: var(--mode-accent);
   font-size: 0.76rem;
   margin-bottom: 0.18rem;
   text-transform: uppercase;
@@ -510,6 +571,30 @@ input {
   padding: 0.65rem 0.8rem;
 }
 
+.scene-label.engineering {
+  border-color: rgba(125, 211, 252, 0.34);
+}
+
+.scene-label.energy {
+  background: rgba(20, 14, 5, 0.86);
+  border-color: rgba(250, 204, 21, 0.36);
+}
+
+.scene-label.energy strong,
+.scene-mode-energy .legend-block h3 {
+  color: #fde68a;
+}
+
+.scene-label.thermal {
+  background: rgba(22, 8, 4, 0.86);
+  border-color: rgba(251, 146, 60, 0.42);
+}
+
+.scene-label.thermal strong,
+.scene-mode-thermal .legend-block h3 {
+  color: #fed7aa;
+}
+
 .scene-label strong {
   color: #f8fafc;
   font-size: 0.82rem;
@@ -560,6 +645,16 @@ input {
   gap: 0.22rem;
   max-width: 13rem;
   padding: 0.5rem 0.65rem;
+}
+
+.scene-mode-energy .overlay-label {
+  border-color: rgba(250, 204, 21, 0.28);
+  color: #fef3c7;
+}
+
+.scene-mode-thermal .overlay-label {
+  border-color: rgba(251, 146, 60, 0.34);
+  color: #ffedd5;
 }
 
 .overlay-label strong {

@@ -128,6 +128,19 @@ Prompt 12 establishes:
 - an explicit engineering realism checklist for public review
 - a capture checklist inside the viewer so final stills can be produced repeatably
 
+Beautiful Sun Prompt 01-02 establishes:
+
+- one persistent orbital environment instead of separate mode-specific worlds
+- a fixed Earth-limb composition shared by Clean, Engineering, Energy, and Thermal views
+- one warm sunrise sun direction and light rig that remains anchored across modes
+- mode-specific brightness and readability adjustments layered over the same scene foundation
+
+Beautiful Sun Prompt 03-04 establishes:
+
+- a layered Earth limb with surface, cloud deck, city-light, terminator, and atmosphere treatments
+- a composition-lock model where mode switches do not yank the camera
+- per-mode reset presets that stay in one coherent orbital shot family
+
 ## 6. System Architecture
 
 The spacecraft uses a long axial layout:
@@ -212,6 +225,10 @@ This separation keeps the viewer flexible without collapsing back into an uncont
 
 The latest presentation pass also makes `Earth Orbit` behave more like the reference imagery instead of a placeholder context mode. The environment now carries a visible solar source, a denser layered starfield, a restrained Milky Way band, and a much larger atmospheric Earth limb so the ship reads against a composed scene instead of a sparse void.
 
+The Beautiful Sun foundation pass tightens that further: Deep Space, Earth Orbit, and Thermal Analysis now share the same Earth position, sun position, and starfield composition. The differences are interpretive brightness treatments, not different orbital scenes.
+
+The next pass upgrades Earth itself into a more premium orbital limb. Earth is still not the subject, but it now carries enough atmosphere, cloud breakup, night-side detail, and dawn-line behavior to feel like a real scale reference behind the spacecraft. Camera discipline also becomes explicit: mode changes reinterpret the same composition, while only reset, preset, fit, or capture actions move the camera.
+
 ## 9. Subsystem Details
 
 Each major subsystem carries explicit engineering copy:
@@ -271,6 +288,7 @@ The documentation splits cleanly by audience:
 
 - `README.md` explains how to use the viewer
 - `CASE_STUDY.md` explains why the viewer is designed this way
+- `docs/technical_truth.md`, `docs/spacecraft_architecture.md`, and `docs/visual_realism_rules.md` lock the final-nail spacecraft realism rules
 - `docs/capture-plan.md` defines the canonical still-capture matrix and export checklist
 - `docs/release-notes.md` defines the release summary, PR draft, deployment note, and final QA checklist
 - prompt files preserve the staged build workflow

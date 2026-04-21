@@ -164,12 +164,12 @@ export default function SpacecraftBus({ isSelected, onSelect, selectedSubsystem 
       </mesh>
 
       <mesh position={[-2.6, 1.25, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[0.95, 0.15, 12, 1, false]} />
+        <cylinderGeometry args={[0.95, 0.15, 12, 16, 1, false]} />
         <meshStandardMaterial color="#cbd5e1" metalness={0.15} roughness={0.56} />
       </mesh>
 
       <mesh position={[0.2, 2.95, 0.65]} rotation={[0.05, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.42, 0.06, 18, 1, false]} />
+        <cylinderGeometry args={[0.42, 0.06, 18, 16, 1, false]} />
         <meshStandardMaterial color="#d3dde8" metalness={0.14} roughness={0.58} />
       </mesh>
 

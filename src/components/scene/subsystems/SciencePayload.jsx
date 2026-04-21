@@ -58,12 +58,12 @@ export default function SciencePayload({ isSelected, onSelect }) {
       </mesh>
 
       <mesh position={[spacecraftStructure.forwardSection.payloadMount.instrumentOffset[0], spacecraftStructure.forwardSection.payloadMount.instrumentOffset[1], spacecraftStructure.forwardSection.payloadMount.instrumentOffset[2]]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.22, 0.05, 18, 1, false]} />
+        <cylinderGeometry args={[0.22, 0.05, 18, 16, 1, false]} />
         <meshStandardMaterial color="#dbe4ed" metalness={0.12} roughness={0.62} />
       </mesh>
 
       <mesh position={spacecraftStructure.forwardSection.payloadMount.dishOffset} rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[0.58, 0.07, 16, 1, false]} />
+        <cylinderGeometry args={[0.58, 0.07, 16, 16, 1, false]} />
         <meshStandardMaterial color="#d7e0eb" metalness={0.12} roughness={0.62} />
       </mesh>
 

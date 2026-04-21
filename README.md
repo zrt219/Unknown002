@@ -61,9 +61,11 @@ These modes are curated inspection states, not separate spacecraft versions. The
 
 ## Scene Environments
 
-- `Deep Space`: neutral technical backdrop and the default engineering/energy environment
-- `Earth Orbit`: hero-context environment and the default clean-view environment, now using a brighter Earth limb, denser star layers, a visible sun source, and a restrained galaxy band
-- `Thermal Analysis`: near-black analytical backdrop and the default thermal environment
+All three environment options now inherit one persistent orbital scene bible: a fixed Earth limb, fixed warm sun direction, stable starfield structure, and stable spacecraft staging. Environment choices adjust brightness and readability; they no longer represent separate worlds.
+
+- `Deep Space`: neutral technical treatment of the same orbital scene and the default engineering/energy environment
+- `Earth Orbit`: hero-context treatment and the default clean-view environment, using the strongest Earth limb, denser star feel, visible sun source, and restrained galaxy band
+- `Thermal Analysis`: near-black analytical treatment of the same orbital scene and the default thermal environment
 
 `Auto-select best scene for view mode` keeps the recommended environment mapping in place:
 
@@ -74,7 +76,29 @@ These modes are curated inspection states, not separate spacecraft versions. The
 
 You can override the environment manually and preserve it until `Reset Scene Defaults` is used.
 
-The scene pass now aims much closer to the reference renders: Earth Orbit uses a stronger solar key direction, a more luminous atmospheric rim, and a fuller starfield so the spacecraft no longer floats in an empty black void.
+The latest orbital foundation pass locks the environment to the reference direction: Earth and sun stay anchored across modes, while mode changes only attenuate atmosphere, exposure, background brightness, and overlay contrast.
+
+## Beautiful Sun Rig
+
+Prompt 01 and 02 from the `zrt_unknown02_beautiful_sun_9_prompt_pack` establish a fixed sunrise light rig:
+
+- one warm white-gold sun source on the left side of the composition
+- one fixed directional key light shared by every scene mode
+- restrained halo and galaxy treatment that supports the spacecraft instead of overpowering it
+- stronger Clean View presentation lighting with dimmer Engineering, Energy, and Thermal adjustments for readability
+- deterministic procedural Earth and galaxy textures so the environment does not feel like it shifts between reloads
+
+## Earth Limb and Composition Lock
+
+Prompt 03 upgrades Earth from a single backdrop sphere into a dedicated limb presentation layer:
+
+- a deterministic day/night surface texture with a soft dawn terminator
+- small warm city-light detail restricted to the darker side
+- a separate transparent cloud deck above the surface
+- three atmosphere shells for blue limb glow, thin white rim, and restrained outer halo
+- mode-aware opacity so Energy and Thermal keep overlays readable without moving Earth
+
+Prompt 04 locks camera discipline around the same orbital composition. Scene mode switches preserve the active camera; `Reset View`, camera presets, capture assets, and fit-to-selection are the explicit camera-moving actions. The reset presets remain one coherent shot family: `Hero Technical View`, `Overview 3/4`, `Energy Flow Overview`, and `Thermal Story View`.
 
 ## Camera Presets
 
@@ -288,6 +312,8 @@ Current live deployment:
 
 Release-prep notes, a GitHub-ready PR title, and a deployment checklist are maintained in [docs/release-notes.md](/C:/Users/Zhane/Documents/New%20project/spacecraft/docs/release-notes.md).
 
+Final-nail technical truth docs live in [docs/technical_truth.md](/C:/Users/Zhane/Documents/New%20project/spacecraft/docs/technical_truth.md), [docs/spacecraft_architecture.md](/C:/Users/Zhane/Documents/New%20project/spacecraft/docs/spacecraft_architecture.md), and [docs/visual_realism_rules.md](/C:/Users/Zhane/Documents/New%20project/spacecraft/docs/visual_realism_rules.md). These are the source-of-truth guardrails for future spacecraft, mode, and release prompts.
+
 ## Repository Contents
 
 Application files:
@@ -318,6 +344,8 @@ This repository still includes the staged prompt workflow used to bootstrap and 
 - Prompt 10: forward-section refinement for bus packaging, PMAD visibility, tank support logic, payload differentiation, and electric-propulsion integration
 - Prompt 11: presentation modes, capture helpers, grouped camera presets, and case-study asset planning
 - Prompt 12: final NASA-style QA, release documentation, realism checklist, and GitHub/Vercel release preparation
+- Beautiful Sun Prompt 01-02: persistent orbital environment bible and fixed-direction hero sun rig
+- Beautiful Sun Prompt 03-04: premium Earth limb, atmosphere layers, and persistent composition/camera discipline
 
 ## Limitations
 

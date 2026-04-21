@@ -1,3 +1,5 @@
+import { getModePresentationProfile } from '../modes/modePresentationProfiles'
+
 const ENERGY_VISIBLE = [
   'reactor',
   'braytonPowerUnit',
@@ -34,29 +36,39 @@ const CAPTURE_BY_SCENE = {
   thermal: THERMAL_VISIBLE
 }
 
-function buildPresentation(visibleSubsystemIds, detail, showLeaderLines, selected) {
+function buildPresentation(sceneMode, visibleSubsystemIds, detail, showLeaderLines, selected) {
+  const annotationTreatment = getModePresentationProfile(sceneMode).annotationTreatment
+  const basePresentation = {
+    detail,
+    labelClass: annotationTreatment.labelClass,
+    leaderLineOpacity: annotationTreatment.leaderLineOpacity,
+    density: annotationTreatment.density,
+    showLeaderLines
+  }
+
   if (selected && !visibleSubsystemIds.includes(selected)) {
     return {
+      ...basePresentation,
       visibleSubsystemIds: [...visibleSubsystemIds, selected],
-      detail,
-      showLeaderLines
     }
   }
 
   return {
+    ...basePresentation,
     visibleSubsystemIds,
-    detail,
-    showLeaderLines
   }
 }
 
 export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
   if (!viewerState.showLabels || viewerState.labelProfile === 'none') {
-    return {
-      visibleSubsystemIds: [],
-      detail: 'hidden',
-      showLeaderLines: false
-    }
+      return {
+        visibleSubsystemIds: [],
+        detail: 'hidden',
+        labelClass: 'hidden',
+        leaderLineOpacity: 0,
+        density: 'none',
+        showLeaderLines: false
+      }
   }
 
   const selected = viewerState.selectedSubsystem
@@ -64,6 +76,7 @@ export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
   switch (viewerState.labelProfile) {
     case 'full-engineering':
       return buildPresentation(
+        sceneMode,
         Object.keys(subsystems),
         'engineering',
         viewerState.showLeaderLines,
@@ -71,6 +84,7 @@ export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
       )
     case 'reduced-review':
       return buildPresentation(
+        sceneMode,
         REDUCED_REVIEW,
         'review',
         viewerState.showLeaderLines,
@@ -78,6 +92,7 @@ export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
       )
     case 'capture':
       return buildPresentation(
+        sceneMode,
         CAPTURE_BY_SCENE[sceneMode] ?? CAPTURE_BY_SCENE.engineering,
         'capture',
         false,
@@ -89,9 +104,10 @@ export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
 
   switch (sceneMode) {
     case 'clean':
-      return buildPresentation(selected ? [selected] : [], 'clean', false, null)
+      return buildPresentation(sceneMode, selected ? [selected] : [], 'clean', false, null)
     case 'energy':
       return buildPresentation(
+        sceneMode,
         ENERGY_VISIBLE,
         'energy',
         viewerState.showLeaderLines,
@@ -99,6 +115,7 @@ export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
       )
     case 'thermal':
       return buildPresentation(
+        sceneMode,
         THERMAL_VISIBLE,
         'thermal',
         viewerState.showLeaderLines,
@@ -107,6 +124,7 @@ export function getAnnotationPresentation(sceneMode, viewerState, subsystems) {
     case 'engineering':
     default:
       return buildPresentation(
+        sceneMode,
         Object.keys(subsystems),
         'engineering',
         viewerState.showLeaderLines,

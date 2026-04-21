@@ -6,6 +6,8 @@ import {
   ClampToEdgeWrapping,
   LinearFilter
 } from 'three'
+import EarthLimb, { useEarthLimbTextures } from './EarthLimb'
+import { getModePresentationProfile } from '../../modes/modePresentationProfiles'
 
 function buildTexture(width, height, painter) {
   const canvas = document.createElement('canvas')
@@ -23,6 +25,15 @@ function buildTexture(width, height, painter) {
   texture.needsUpdate = true
 
   return texture
+}
+
+function createSeededRandom(seed) {
+  let state = seed
+
+  return () => {
+    state = (state * 1664525 + 1013904223) % 4294967296
+    return state / 4294967296
+  }
 }
 
 function createSunTexture() {
@@ -71,6 +82,8 @@ function createSunTexture() {
 
 function createGalaxyTexture(primaryTint, secondaryTint) {
   return buildTexture(1536, 512, (context, width, height) => {
+    const random = createSeededRandom(1902)
+
     context.clearRect(0, 0, width, height)
 
     const majorGradient = context.createLinearGradient(0, height * 0.72, width, height * 0.18)
@@ -92,8 +105,8 @@ function createGalaxyTexture(primaryTint, secondaryTint) {
     for (let index = 0; index < 50; index += 1) {
       const progress = index / 49
       const x = width * (0.06 + progress * 0.88)
-      const y = height * (0.67 - progress * 0.42 + (Math.random() - 0.5) * 0.12)
-      const radius = 42 + Math.random() * 78
+      const y = height * (0.67 - progress * 0.42 + (random() - 0.5) * 0.12)
+      const radius = 42 + random() * 78
       const gradient = context.createRadialGradient(x, y, 0, x, y, radius)
       gradient.addColorStop(0, `${primaryTint}66`)
       gradient.addColorStop(0.45, `${secondaryTint}40`)
@@ -106,94 +119,19 @@ function createGalaxyTexture(primaryTint, secondaryTint) {
     context.restore()
 
     for (let index = 0; index < 480; index += 1) {
-      const x = Math.random() * width
-      const y = Math.random() * height
-      const alpha = Math.random() * 0.55
-      const radius = Math.random() < 0.14 ? 1.8 : 0.9
+      const x = random() * width
+      const y = random() * height
+      const alpha = random() * 0.55
+      const radius = random() < 0.14 ? 1.8 : 0.9
 
       context.fillStyle =
-        Math.random() < 0.18
+        random() < 0.18
           ? `rgba(207, 218, 255, ${alpha})`
           : `rgba(255, 246, 236, ${alpha})`
       context.beginPath()
       context.arc(x, y, radius, 0, Math.PI * 2)
       context.fill()
     }
-  })
-}
-
-function createEarthTexture() {
-  return buildTexture(1024, 1024, (context, width, height) => {
-    context.clearRect(0, 0, width, height)
-
-    const oceanGradient = context.createRadialGradient(
-      width * 0.34,
-      height * 0.34,
-      width * 0.08,
-      width * 0.5,
-      height * 0.5,
-      width * 0.58
-    )
-    oceanGradient.addColorStop(0, '#17325a')
-    oceanGradient.addColorStop(0.5, '#0f2342')
-    oceanGradient.addColorStop(1, '#050c18')
-    context.fillStyle = oceanGradient
-    context.fillRect(0, 0, width, height)
-
-    context.save()
-    context.globalAlpha = 0.32
-    for (let index = 0; index < 22; index += 1) {
-      const x = width * (0.14 + Math.random() * 0.72)
-      const y = height * (0.18 + Math.random() * 0.62)
-      const radiusX = 36 + Math.random() * 120
-      const radiusY = 18 + Math.random() * 70
-      const rotation = Math.random() * Math.PI
-
-      context.translate(x, y)
-      context.rotate(rotation)
-      context.fillStyle = Math.random() < 0.55 ? '#4e5544' : '#766347'
-      context.beginPath()
-      context.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2)
-      context.fill()
-      context.setTransform(1, 0, 0, 1, 0, 0)
-    }
-    context.restore()
-
-    context.save()
-    context.globalAlpha = 0.16
-    context.filter = 'blur(10px)'
-    for (let index = 0; index < 120; index += 1) {
-      const x = Math.random() * width
-      const y = Math.random() * height
-      const radiusX = 22 + Math.random() * 88
-      const radiusY = 8 + Math.random() * 28
-      const rotation = Math.random() * Math.PI
-
-      context.translate(x, y)
-      context.rotate(rotation)
-      context.fillStyle = '#edf4ff'
-      context.beginPath()
-      context.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2)
-      context.fill()
-      context.setTransform(1, 0, 0, 1, 0, 0)
-    }
-    context.restore()
-
-    context.save()
-    context.globalAlpha = 0.78
-    context.filter = 'blur(1px)'
-    for (let index = 0; index < 2200; index += 1) {
-      const x = width * (0.1 + Math.random() * 0.8)
-      const y = height * (0.36 + Math.random() * 0.46)
-      const radius = Math.random() < 0.1 ? 1.8 : 0.9
-      const alpha = 0.08 + Math.random() * 0.34
-
-      context.fillStyle = `rgba(255, 189, 98, ${alpha})`
-      context.beginPath()
-      context.arc(x, y, radius, 0, Math.PI * 2)
-      context.fill()
-    }
-    context.restore()
   })
 }
 
@@ -269,54 +207,15 @@ function SunField({ opacity, profile, texture }) {
   )
 }
 
-function EarthBackdrop({ opacity, profile, texture, sceneMode }) {
-  if (!profile?.visible || opacity <= 0.01) {
-    return null
-  }
-
-  const atmosphereOpacity = getSceneOpacity(profile.atmosphereOpacity, sceneMode, 0.32)
-
-  return (
-    <group position={profile.position} rotation={profile.rotation ?? [0, 0, 0]}>
-      <mesh renderOrder={-22}>
-        <sphereGeometry args={[profile.radius, 96, 96]} />
-        <meshBasicMaterial
-          map={texture}
-          opacity={opacity}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
-      <mesh scale={profile.atmosphereScale ?? 1.02} renderOrder={-21}>
-        <sphereGeometry args={[profile.radius, 96, 96]} />
-        <meshBasicMaterial
-          blending={AdditiveBlending}
-          color={profile.atmosphereColor ?? '#74bbff'}
-          opacity={opacity * atmosphereOpacity}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
-      <mesh scale={(profile.atmosphereScale ?? 1.02) * 1.01} renderOrder={-21}>
-        <sphereGeometry args={[profile.radius, 96, 96]} />
-        <meshBasicMaterial
-          blending={AdditiveBlending}
-          color="#dff3ff"
-          opacity={opacity * atmosphereOpacity * 0.22}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
-    </group>
-  )
-}
-
 export default function SceneEnvironment({
   captureSafeBackground = false,
   environmentProfile,
   sceneMode
 }) {
-  const earthTexture = useMemo(() => createEarthTexture(), [])
+  const presentationProfile = getModePresentationProfile(sceneMode)
+  const environmentMultiplier =
+    presentationProfile.sceneTone.environmentOpacityMultiplier
+  const earthTextures = useEarthLimbTextures(environmentProfile.earth.presentation)
   const sunTexture = useMemo(() => createSunTexture(), [])
   const galaxyTexture = useMemo(
     () =>
@@ -334,23 +233,29 @@ export default function SceneEnvironment({
 
     const baseOpacity = getSceneOpacity(environmentProfile.earth.sceneOpacity, sceneMode, 1)
 
-    return captureSafeBackground ? baseOpacity * 0.55 : baseOpacity
-  }, [captureSafeBackground, environmentProfile.earth, sceneMode])
+    const modeOpacity = baseOpacity * environmentMultiplier.earth
+
+    return captureSafeBackground ? modeOpacity * 0.55 : modeOpacity
+  }, [captureSafeBackground, environmentMultiplier.earth, environmentProfile.earth, sceneMode])
 
   const sunOpacity = useMemo(
     () => {
       const baseOpacity = getSceneOpacity(environmentProfile.sun?.sceneOpacity, sceneMode, 0)
-      return captureSafeBackground ? baseOpacity * 0.52 : baseOpacity
+      const modeOpacity = baseOpacity * environmentMultiplier.sun
+
+      return captureSafeBackground ? modeOpacity * 0.52 : modeOpacity
     },
-    [captureSafeBackground, environmentProfile.sun, sceneMode]
+    [captureSafeBackground, environmentMultiplier.sun, environmentProfile.sun, sceneMode]
   )
 
   const galaxyOpacity = useMemo(
     () => {
       const baseOpacity = getSceneOpacity(environmentProfile.galaxyBand?.sceneOpacity, sceneMode, 0)
-      return captureSafeBackground ? baseOpacity * 0.4 : baseOpacity
+      const modeOpacity = baseOpacity * environmentMultiplier.galaxy
+
+      return captureSafeBackground ? modeOpacity * 0.4 : modeOpacity
     },
-    [captureSafeBackground, environmentProfile.galaxyBand, sceneMode]
+    [captureSafeBackground, environmentMultiplier.galaxy, environmentProfile.galaxyBand, sceneMode]
   )
 
   return (
@@ -379,11 +284,12 @@ export default function SceneEnvironment({
         profile={environmentProfile.sun}
         texture={sunTexture}
       />
-      <EarthBackdrop
+      <EarthLimb
+        cloudTexture={earthTextures.cloudTexture}
         opacity={earthOpacity}
         profile={environmentProfile.earth}
         sceneMode={sceneMode}
-        texture={earthTexture}
+        surfaceTexture={earthTextures.surfaceTexture}
       />
     </>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import AppShell from './components/layout/AppShell'
 import SceneRoot from './components/scene/SceneRoot'
 import BraytonInset from './components/ui/BraytonInset'
@@ -505,6 +505,7 @@ export default function App() {
         ) : null
       }
       metadata={metadata}
+      modePresentationProfile={activeSceneMode.presentation}
       modeControls={
         <InspectionModes
           activeMode={viewerState.sceneMode}

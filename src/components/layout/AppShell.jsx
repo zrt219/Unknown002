@@ -11,6 +11,7 @@ export default function AppShell({
   inspectionList,
   legend,
   modeControls,
+  modePresentationProfile,
   metadata,
   onShowHud,
   presentationControls,
@@ -21,8 +22,21 @@ export default function AppShell({
   thermalNotes,
   scene
 }) {
+  const uiTreatment = modePresentationProfile?.uiTreatment ?? {}
+  const sceneClass = modePresentationProfile?.sceneTone?.shellClass ?? 'scene-mode-clean'
+  const panelVariant = uiTreatment.panelVariant ?? 'presentation'
+
   return (
-    <div className={`app-shell ${hideHudForCapture ? 'capture-ui-hidden' : ''}`}>
+    <div
+      className={[
+        'app-shell',
+        sceneClass,
+        `hud-variant-${panelVariant}`,
+        hideHudForCapture ? 'capture-ui-hidden' : ''
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <div className="viewer-stage">
         {scene}
         {hideHudForCapture ? (
@@ -43,12 +57,17 @@ export default function AppShell({
           <section className="hud-section">
             <h2>Scene Modes</h2>
             {modeControls}
+            {uiTreatment.modeCallout ? (
+              <p className="mode-callout">{uiTreatment.modeCallout}</p>
+            ) : null}
           </section>
 
-          <section className="hud-section">
-            <h2>Presentation Modes</h2>
-            {presentationControls}
-          </section>
+          {uiTreatment.showPresentationModes ? (
+            <section className="hud-section">
+              <h2>Presentation Modes</h2>
+              {presentationControls}
+            </section>
+          ) : null}
 
           <section className="hud-section">
             <h2>Scene Environment</h2>
@@ -62,6 +81,18 @@ export default function AppShell({
             </section>
           ) : null}
 
+          {energyInset ? (
+            <section className="hud-section priority-mode-section">
+              {energyInset}
+            </section>
+          ) : null}
+
+          {thermalNotes ? (
+            <section className="hud-section priority-mode-section">
+              {thermalNotes}
+            </section>
+          ) : null}
+
           {sectionVisibility.subsystemDirectory ? (
             <section className="hud-section">
               <h2>Subsystem Directory</h2>
@@ -69,33 +100,25 @@ export default function AppShell({
             </section>
           ) : null}
 
-          <section className="hud-section">
+          {uiTreatment.showCameraPresets ? (
+            <section className="hud-section">
             <h2>Camera Presets</h2>
             {cameraControls}
             {cameraActions}
-          </section>
+            </section>
+          ) : null}
 
-          <section className="hud-section">
-            <h2>Capture Studio</h2>
-            {captureStudio}
-          </section>
+          {uiTreatment.showCaptureStudio ? (
+            <section className="hud-section capture-studio-section">
+              <h2>Capture Studio</h2>
+              {captureStudio}
+            </section>
+          ) : null}
 
           {sectionVisibility.subsystemCard ? (
             <section className="hud-section">
               <h2>Selected Subsystem</h2>
               {subsystemCard}
-            </section>
-          ) : null}
-
-          {energyInset ? (
-            <section className="hud-section">
-              {energyInset}
-            </section>
-          ) : null}
-
-          {thermalNotes ? (
-            <section className="hud-section">
-              {thermalNotes}
             </section>
           ) : null}
 
@@ -122,7 +145,7 @@ export default function AppShell({
             </p>
           </section>
 
-          {sectionVisibility.accessibilityNotes ? (
+          {sectionVisibility.accessibilityNotes && uiTreatment.showAccessibilityNotes ? (
             <section className="hud-section">
               <h2>Accessibility Notes</h2>
               <ul className="note-list">

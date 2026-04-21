@@ -20,11 +20,20 @@ function BraytonLabel({ note, text }) {
   )
 }
 
-function SegmentLine({ color, points }) {
-  return <Line color={color} lineWidth={1.4} points={points} transparent />
+function SegmentLine({ color, intensity, points }) {
+  return (
+    <Line
+      color={color}
+      lineWidth={1.4 * intensity}
+      opacity={0.84 * intensity}
+      points={points}
+      transparent
+    />
+  )
 }
 
 export default function BraytonOverlay({
+  overlayTreatment,
   sceneMode,
   showWorkingFluidParticles,
   viewerState
@@ -56,15 +65,18 @@ export default function BraytonOverlay({
     [loopCurve]
   )
 
-  if (!viewerState.showBraytonOverlay) {
+  if (!viewerState.showBraytonOverlay || !overlayTreatment.brayton.visible) {
     return null
   }
+  const intensity = overlayTreatment.brayton.intensity
+  const particleScale = overlayTreatment.particles.scale
 
   return (
     <group>
       {segmentLines.map((segment) => (
         <SegmentLine
           color={segment.color}
+          intensity={intensity}
           key={segment.key}
           points={segment.points}
         />
@@ -72,16 +84,16 @@ export default function BraytonOverlay({
 
       <Line
         color={colors.accent}
-        lineWidth={0.8}
-        opacity={0.75}
+        lineWidth={0.8 * intensity}
+        opacity={0.75 * intensity}
         points={shaftLine}
         transparent
       />
 
       <Line
         color={colors.heatInput}
-        lineWidth={1.1}
-        opacity={0.7}
+        lineWidth={1.1 * intensity}
+        opacity={0.7 * intensity}
         points={braytonOverlay.heatInputPath}
         transparent
       />
@@ -90,7 +102,7 @@ export default function BraytonOverlay({
         color={colors.heatInput}
         count={3}
         paused={viewerState.paused}
-        radius={0.08}
+        radius={0.08 * particleScale}
         route={braytonOverlay.heatInputPath}
         speed={viewerState.animationSpeed * braytonOverlay.speedScale.heat}
         visible
@@ -112,7 +124,7 @@ export default function BraytonOverlay({
                 count={2}
                 key={`fluid-${segment.key}`}
                 paused={viewerState.paused}
-                radius={0.07}
+                radius={0.07 * particleScale}
                 route={segmentRoute}
                 speed={
                   viewerState.animationSpeed * braytonOverlay.speedScale.brayton

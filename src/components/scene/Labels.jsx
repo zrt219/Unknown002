@@ -47,6 +47,7 @@ export default function Labels({ presentation, selectedSubsystem }) {
               className={[
                 'scene-label',
                 emphasized ? 'active' : '',
+                presentation.labelClass ?? '',
                 presentation.detail === 'capture' ? 'capture' : '',
                 presentation.detail === 'review' ? 'review' : ''
               ]

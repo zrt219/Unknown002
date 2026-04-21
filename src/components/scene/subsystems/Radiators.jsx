@@ -77,11 +77,11 @@ export default function Radiators({ isSelected, onSelect, showRadiatorEmphasis }
         <>
           <mesh position={[-10.4, 7.85, 8.45]} rotation={[0.74, 0.02, 0.88]}>
             <planeGeometry args={[18.5, 7.2]} />
-            <meshBasicMaterial color="#7fb8ff" opacity={0.07} transparent />
+            <meshBasicMaterial color="#7fb8ff" opacity={0.14} transparent />
           </mesh>
           <mesh position={[-10.4, -7.7, -8.45]} rotation={[-0.74, -0.02, 0.88]}>
             <planeGeometry args={[18.5, 7.2]} />
-            <meshBasicMaterial color="#7fb8ff" opacity={0.07} transparent />
+            <meshBasicMaterial color="#7fb8ff" opacity={0.14} transparent />
           </mesh>
         </>
       ) : null}

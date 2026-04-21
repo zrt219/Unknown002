@@ -44,7 +44,7 @@ export default function RadiationShield({ isSelected, onSelect, showShieldCone }
       {showShieldCone ? (
         <mesh position={[4.8, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
           <coneGeometry args={[3.8, 10, 28, 1, true]} />
-          <meshBasicMaterial color="#fbbf24" opacity={0.1} side={2} transparent />
+          <meshBasicMaterial color="#fbbf24" opacity={0.16} side={2} transparent />
         </mesh>
       ) : null}
     </group>

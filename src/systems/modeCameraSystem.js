@@ -1,7 +1,12 @@
 import { sceneModeConfig } from '../modes/sceneModeConfig'
+import { modeCameraProfiles } from './orbitalCameraProfiles.js'
 
 export function getResetCameraPreset(sceneMode) {
-  return sceneModeConfig[sceneMode]?.defaultCameraPreset ?? 'heroTechnical'
+  return (
+    modeCameraProfiles[sceneMode]?.resetPreset ??
+    sceneModeConfig[sceneMode]?.defaultCameraPreset ??
+    'heroTechnical'
+  )
 }
 
 export function getFitToSelectionPreset(selectedSubsystem, subsystems) {
